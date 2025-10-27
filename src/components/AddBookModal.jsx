@@ -1,15 +1,41 @@
 import React, { useState } from 'react';
 import './AddBookModal.css';
 
-const AddBookModal = ({ isOpen, onClose, onAddBook }) => {
+const AddBookModal = ({ isOpen, onClose, onAddBook, editingBook, onEditBook }) => {
   const [formData, setFormData] = useState({
     title: '',
     author: '',
     publisher: '',
     publicationYear: '',
     language: '',
-    pages: ''
+    pages: '',
+    coverImage: ''
   });
+
+  // Populate form when editing a book
+  React.useEffect(() => {
+    if (editingBook) {
+      setFormData({
+        title: editingBook.title || '',
+        author: editingBook.author || '',
+        publisher: editingBook.publisher || '',
+        publicationYear: editingBook.publicationYear || '',
+        language: editingBook.language || '',
+        pages: editingBook.pages || '',
+        coverImage: editingBook.coverImage || ''
+      });
+    } else {
+      setFormData({
+        title: '',
+        author: 'by ',
+        publisher: '',
+        publicationYear: '',
+        language: '',
+        pages: '',
+        coverImage: ''
+      });
+    }
+  }, [editingBook]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -21,18 +47,12 @@ const AddBookModal = ({ isOpen, onClose, onAddBook }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add the book using the provided form data
-    onAddBook(formData);
+    if (editingBook) {
+      onEditBook(formData);
+    } else {
+      onAddBook(formData);
+    }
     onClose();
-    // Reset form
-    setFormData({
-      title: '',
-      author: '',
-      publisher: '',
-      publicationYear: '',
-      language: '',
-      pages: ''
-    });
   };
 
   const handleClose = () => {
@@ -44,7 +64,8 @@ const AddBookModal = ({ isOpen, onClose, onAddBook }) => {
       publisher: '',
       publicationYear: '',
       language: '',
-      pages: ''
+      pages: '',
+      coverImage: ''
     });
   };
 
@@ -53,7 +74,7 @@ const AddBookModal = ({ isOpen, onClose, onAddBook }) => {
   return (
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2 className="modal-title">Add Book</h2>
+        <h2 className="modal-title">{editingBook ? 'Edit Book' : 'Add Book'}</h2>
         <form onSubmit={handleSubmit} className="book-form">
           <div className="form-row">
             <label htmlFor="title">Title</label>
@@ -122,6 +143,18 @@ const AddBookModal = ({ isOpen, onClose, onAddBook }) => {
               name="pages"
               value={formData.pages}
               onChange={handleInputChange}
+            />
+          </div>
+          
+          <div className="form-row">
+            <label htmlFor="coverImage">Cover Image URL</label>
+            <input
+              type="url"
+              id="coverImage"
+              name="coverImage"
+              value={formData.coverImage}
+              onChange={handleInputChange}
+              placeholder="https://example.com/image.jpg"
             />
           </div>
           

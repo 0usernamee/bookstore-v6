@@ -22,6 +22,31 @@
   font-weight: 600;
 }
 
+.filter-controls {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  background-color: white;
+  border-bottom: 1px solid #ddd;
+}
+
+.filter-controls label {
+  font-weight: 500;
+  color: #333;
+  font-family: serif;
+}
+
+.filter-controls select {
+  padding: 8px 12px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  min-width: 150px;
+}
+
 .catalog-layout {
   display: flex;
   gap: 20px;

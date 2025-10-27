@@ -35,7 +35,10 @@ const BookCard = ({ book, onLearnMore, isSelected, onSelect }) => {
       </div>
       <div className="book-info">
         <p className="book-price"> {book.price}</p>
-        <button 
+        {book.coverImage && (
+          <p className="book-author-info">{book.author || 'Unknown Author'}</p>
+        )}
+        {/* <button 
           className="learn-more-btn"
           onClick={(e) => {
             e.stopPropagation();
@@ -43,7 +46,7 @@ const BookCard = ({ book, onLearnMore, isSelected, onSelect }) => {
           }}
         >
           Learn more
-        </button>
+        </button> */}
       </div>
     </div>
   );

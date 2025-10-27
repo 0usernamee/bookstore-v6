@@ -9,45 +9,54 @@ const BookCatalog = () => {
   const [error, setError] = useState(null);
   const [selectedBookId, setSelectedBookId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filterPublisher, setFilterPublisher] = useState('');
+  const [filterLanguage, setFilterLanguage] = useState('');
+  const [editingBook, setEditingBook] = useState(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
+  // Load books from localStorage or from JSON file
   useEffect(() => {
     const loadBooks = async () => {
       try {
         setLoading(true);
-        // Read the JSON file using fetch
-        const response = await fetch('/books.json');
-        const data = await response.json();
         
-        console.log('API Response:', JSON.stringify(data)); // helps me know how to call the api data
-        // only need two books for now - can manipulate the slice data of the variable to increase the books - hopefully
-        let booksW = data.slice(0, 0);
+        // Check if books exist in localStorage
+        const savedBooks = localStorage.getItem('books');
+        console.log('Saved books from localStorage:', savedBooks);
         
-        const processedBooks = booksW.map((bookData, index) => {
-          return {
-            id: bookData.isbn13 || `book-${index}`,
-            title: bookData.title,
-            subtitle: bookData.subtitle || '',
-            coverImage: bookData.image,
-            price: bookData.price,
-            isbn: bookData.isbn13,
-            url: bookData.url
-          };
-        });
+        if (savedBooks && savedBooks !== '[]') {
+          // Load from localStorage
+          const parsedBooks = JSON.parse(savedBooks);
+          console.log('Parsed books:', parsedBooks);
+          setBooks(parsedBooks);
+        } else {
+          // Start with empty array if no localStorage data
+          console.log('No saved books found, starting with empty array');
+          setBooks([]);
+        }
         
-        console.log('Processed books:', processedBooks);
-        setBooks(processedBooks);
         setLoading(false);
+        setIsInitialized(true);
         
       } catch (error) {
-        console.error('Error loading books from JSON file:', error);
+        console.error('Error loading books:', error);
         setError(error.message);
         setLoading(false);
-        // displays if the api fails for whatever reason
+        setIsInitialized(true);
       }
     };
 
     loadBooks();
   }, []);
+
+  // Save books to localStorage whenever books change (but not on initial load)
+  useEffect(() => {
+    // Only save after initial load is complete
+    if (isInitialized) {
+      console.log('Saving books to localStorage:', books);
+      localStorage.setItem('books', JSON.stringify(books));
+    }
+  }, [books, isInitialized]);
 
   const handleLearnMore = (book) => {
     console.log('Learn more about:', book.title);
@@ -71,11 +80,22 @@ const BookCatalog = () => {
   };
 
   const handleOpenModal = () => {
+    setEditingBook(null);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setEditingBook(null);
+  };
+
+  const handleEditSelected = () => {
+    if (!selectedBookId) return;
+    const bookToEdit = books.find(b => b.id === selectedBookId);
+    if (bookToEdit) {
+      setEditingBook(bookToEdit);
+      setIsModalOpen(true);
+    }
   };
 
   const handleDeleteSelected = () => {
@@ -83,6 +103,21 @@ const BookCatalog = () => {
     setBooks(prev => prev.filter(b => b.id !== selectedBookId));
     setSelectedBookId(null);
   };
+
+  // Get unique publishers and languages for filter dropdowns
+  const getUniqueValues = (key) => {
+    const values = books
+      .map(book => book[key])
+      .filter(value => value && value.trim() !== '');
+    return [...new Set(values)].sort();
+  };
+
+  // Filter books based on publisher and language
+  const filteredBooks = books.filter(book => {
+    const matchesPublisher = !filterPublisher || book.publisher === filterPublisher;
+    const matchesLanguage = !filterLanguage || book.language === filterLanguage;
+    return matchesPublisher && matchesLanguage;
+  });
 
   if (loading) {
     return (
@@ -111,14 +146,39 @@ const BookCatalog = () => {
       <div className="catalog-header">
         <h1>Book Catalog</h1>
       </div>
+      <div className="filter-controls">
+        <label htmlFor="filter-publisher">Filter by Publisher:</label>
+        <select 
+          id="filter-publisher" 
+          value={filterPublisher} 
+          onChange={(e) => setFilterPublisher(e.target.value)}
+        >
+          <option value="">All Publishers</option>
+          {getUniqueValues('publisher').map(publisher => (
+            <option key={publisher} value={publisher}>{publisher}</option>
+          ))}
+        </select>
+        
+        <label htmlFor="filter-language">Filter by Language:</label>
+        <select 
+          id="filter-language" 
+          value={filterLanguage} 
+          onChange={(e) => setFilterLanguage(e.target.value)}
+        >
+          <option value="">All Languages</option>
+          {getUniqueValues('language').map(language => (
+            <option key={language} value={language}>{language}</option>
+          ))}
+        </select>
+      </div>
       <div className="catalog-layout">
         <div className="add-button-column">
           <button className='add-button' onClick={handleOpenModal}>New</button>
-          <button className='edit-button' onClick={() => { /* edit no-op for now */ }}>EDIT</button>
+          <button className='edit-button' onClick={handleEditSelected}>EDIT</button>
           <button className='delete-button' onClick={handleDeleteSelected}>DELETE</button>
         </div>
         <div className="books-grid">
-          {books.map((book) => (
+          {filteredBooks.map((book) => (
             <BookCard
               key={book.id}
               book={book}
@@ -135,12 +195,13 @@ const BookCatalog = () => {
       <AddBookModal 
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+        editingBook={editingBook}
         onAddBook={(formData) => {
           const newBook = {
             id: `book-${Date.now()}`,
             title: formData.title || 'Untitled',
             subtitle: '',
-            coverImage: '',
+            coverImage: formData.coverImage || '',
             price: '',
             isbn: '',
             url: '',
@@ -151,6 +212,14 @@ const BookCatalog = () => {
             pages: formData.pages
           };
           setBooks(prev => [newBook, ...prev]);
+        }}
+        onEditBook={(formData) => {
+          if (!editingBook) return;
+          setBooks(prev => prev.map(book => 
+            book.id === editingBook.id 
+              ? { ...book, ...formData }
+              : book
+          ));
         }}
       />
     </div>

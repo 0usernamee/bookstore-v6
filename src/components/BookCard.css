@@ -99,6 +99,14 @@ font-weight: 750;
   font-size: 0.9rem;
 }
 
+.book-author-info {
+  color: #000000;
+  font-weight: 500;
+  margin: 0;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
 .remove-btn-top {
   position: absolute;
   top: 8px;
