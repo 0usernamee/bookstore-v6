@@ -1,7 +1,7 @@
 import React from 'react';
 import './BookCard.css';
 
-const BookCard = ({ book, onLearnMore, isSelected, onSelect }) => {
+const BookCard = ({ book, onLearnMore, isSelected, onSelect, isOnLoan }) => {
   const handleCardClick = () => {
     onSelect(book.id);
   };
@@ -11,6 +11,9 @@ const BookCard = ({ book, onLearnMore, isSelected, onSelect }) => {
       className={`book-card ${isSelected ? 'selected' : ''}`}
       onClick={handleCardClick}
     >
+      {isOnLoan && (
+        <div className="loan-badge">On loan</div>
+      )}
       <div className="book-cover">
         {book.coverImage ? (
           <img 

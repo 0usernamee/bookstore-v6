@@ -10,7 +10,6 @@
   justify-content: center;
   z-index: 1000;
   padding: 20px;
-  backdrop-filter: blur(2px);
 }
 
 .modal-content {
@@ -58,7 +57,7 @@
 .form-row label {
   min-width: 120px;
   font-weight: normal;
-  color: #333;
+  color: #ffffff;
   font-size: 1rem;
   font-family: serif;
 }
@@ -70,7 +69,7 @@
   border-radius: 0;
   font-size: 1rem;
   font-family: sans-serif;
-  background: white;
+  background: rgb(205, 205, 205);
   color: #333;
 }
 

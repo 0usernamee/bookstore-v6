@@ -15,6 +15,19 @@
   position: relative;
 }
 
+.loan-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  background-color: #1aa5a5;
+  color: #ffffff;
+  text-align: center;
+  padding: 6px 0;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
 .book-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);

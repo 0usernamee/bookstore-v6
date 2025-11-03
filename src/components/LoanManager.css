@@ -1,0 +1,16 @@
+.loan-container {
+  padding: 20px;
+}
+
+.loans-section {
+  margin-top: 40px;
+}
+
+.loan-item {
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 12px;
+  background: #2e2e2e;
+}
+
+

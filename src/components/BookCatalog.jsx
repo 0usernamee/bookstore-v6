@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import BookCard from './BookCard';
 import AddBookModal from './AddBookModal';
+import LoanManager from './LoanManager';
 import './BookCatalog.css';
 
 const BookCatalog = () => {
@@ -13,6 +14,9 @@ const BookCatalog = () => {
   const [filterLanguage, setFilterLanguage] = useState('');
   const [editingBook, setEditingBook] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [viewMode, setViewMode] = useState('catalog'); // 'catalog' | 'loans'
+  const [loans, setLoans] = useState([]);
+  const [loansInitialized, setLoansInitialized] = useState(false);
 
   // Load books from localStorage or from JSON file
   useEffect(() => {
@@ -48,6 +52,25 @@ const BookCatalog = () => {
 
     loadBooks();
   }, []);
+
+  // Load loans from localStorage once
+  useEffect(() => {
+    try {
+      const savedLoans = localStorage.getItem('loans');
+      setLoans(savedLoans ? JSON.parse(savedLoans) : []);
+    } catch (_) {
+      setLoans([]);
+    } finally {
+      setLoansInitialized(true);
+    }
+  }, []);
+
+  // Persist loans after initial load
+  useEffect(() => {
+    if (loansInitialized) {
+      localStorage.setItem('loans', JSON.stringify(loans));
+    }
+  }, [loans, loansInitialized]);
 
   // Save books to localStorage whenever books change (but not on initial load)
   useEffect(() => {
@@ -119,6 +142,12 @@ const BookCatalog = () => {
     return matchesPublisher && matchesLanguage;
   });
 
+  const isBookOnLoan = (bookId) => loans.some(l => l.bookId === bookId);
+
+  const handleCreateLoan = (loan) => {
+    setLoans(prev => [...prev, loan]);
+  };
+
   if (loading) {
     return (
       <div className="book-catalog">
@@ -141,10 +170,22 @@ const BookCatalog = () => {
     );
   }
 
+  if (viewMode === 'loans') {
+    return (
+      <LoanManager
+        books={books}
+        loans={loans}
+        onCreateLoan={handleCreateLoan}
+        onQuit={() => setViewMode('catalog')}
+      />
+    );
+  }
+
   return (
     <div className="book-catalog">
       <div className="catalog-header">
         <h1>Book Catalog</h1>
+        <button className='edit-button' onClick={() => setViewMode('loans')}>MANAGE LOANS</button>
       </div>
       <div className="filter-controls">
         <label htmlFor="filter-publisher">Filter by Publisher:</label>
@@ -185,6 +226,7 @@ const BookCatalog = () => {
               onLearnMore={handleLearnMore}
               isSelected={selectedBookId === book.id}
               onSelect={handleBookSelect}
+              isOnLoan={isBookOnLoan(book.id)}
             />
           ))}
         </div>
