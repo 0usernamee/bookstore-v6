@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import BookCard from './BookCard';
 import AddBookModal from './AddBookModal';
 import LoanManager from './LoanManager';
+import BookDetails from './BookDetails';
 import './BookCatalog.css';
 
 const BookCatalog = () => {
@@ -14,9 +15,10 @@ const BookCatalog = () => {
   const [filterLanguage, setFilterLanguage] = useState('');
   const [editingBook, setEditingBook] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [viewMode, setViewMode] = useState('catalog'); // 'catalog' | 'loans'
+  const [viewMode, setViewMode] = useState('catalog'); // 'catalog' | 'loans' | 'details'
   const [loans, setLoans] = useState([]);
   const [loansInitialized, setLoansInitialized] = useState(false);
+  const [detailBook, setDetailBook] = useState(null);
 
   // Load books from localStorage or from JSON file
   useEffect(() => {
@@ -124,6 +126,7 @@ const BookCatalog = () => {
   const handleDeleteSelected = () => {
     if (!selectedBookId) return;
     setBooks(prev => prev.filter(b => b.id !== selectedBookId));
+    setLoans(prev => prev.filter(loan => loan.bookId !== selectedBookId));
     setSelectedBookId(null);
   };
 
@@ -146,6 +149,16 @@ const BookCatalog = () => {
 
   const handleCreateLoan = (loan) => {
     setLoans(prev => [...prev, loan]);
+  };
+
+  const handleViewDetails = (book) => {
+    setDetailBook(book);
+    setViewMode('details');
+  };
+
+  const handleCloseDetails = () => {
+    setViewMode('catalog');
+    setDetailBook(null);
   };
 
   if (loading) {
@@ -177,6 +190,15 @@ const BookCatalog = () => {
         loans={loans}
         onCreateLoan={handleCreateLoan}
         onQuit={() => setViewMode('catalog')}
+      />
+    );
+  }
+
+  if (viewMode === 'details') {
+    return (
+      <BookDetails
+        book={detailBook}
+        onClose={handleCloseDetails}
       />
     );
   }
@@ -227,6 +249,7 @@ const BookCatalog = () => {
               isSelected={selectedBookId === book.id}
               onSelect={handleBookSelect}
               isOnLoan={isBookOnLoan(book.id)}
+              onViewDetails={handleViewDetails}
             />
           ))}
         </div>

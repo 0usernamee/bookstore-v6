@@ -1,0 +1,161 @@
+.book-details-view {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.book-details-content {
+  display: flex;
+  gap: 40px;
+  padding: 40px 20px;
+  max-width: 960px;
+  margin: 0 auto;
+  align-items: flex-start;
+}
+
+.book-details-cover {
+  flex: 0 0 280px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #dcdcdc;
+  border-radius: 8px;
+  padding: 20px;
+  min-height: 380px;
+}
+
+.book-details-cover img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.book-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  font-style: italic;
+}
+
+.book-details-info {
+  flex: 1;
+  background: white;
+  color: black;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.book-details-info h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.book-details-subtitle {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-style: italic;
+  color: #555;
+}
+
+.book-details-metadata {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.book-details-metadata li {
+  font-size: 0.95rem;
+}
+
+.similar-books-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.similar-books-section h3 {
+  margin-bottom: 20px;
+}
+
+.similar-books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.similar-book-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.similar-book-cover {
+  background: #dcdcdc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.similar-book-cover img {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+}
+
+.similar-book-info {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.similar-book-info h4 {
+  margin: 0;
+}
+
+.similar-book-subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.similar-book-price {
+  margin: 0;
+  font-weight: bold;
+}
+
+.similar-book-info a {
+  color: #1a73e8;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.error-text {
+  color: #d32f2f;
+}
+
+@media (max-width: 768px) {
+  .book-details-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .book-details-cover {
+    width: 100%;
+  }
+
+  .book-details-info {
+    width: 100%;
+  }
+}
+
+

@@ -1,7 +1,7 @@
 import React from 'react';
 import './BookCard.css';
 
-const BookCard = ({ book, onLearnMore, isSelected, onSelect, isOnLoan }) => {
+const BookCard = ({ book, onLearnMore, isSelected, onSelect, isOnLoan, onViewDetails }) => {
   const handleCardClick = () => {
     onSelect(book.id);
   };
@@ -41,15 +41,19 @@ const BookCard = ({ book, onLearnMore, isSelected, onSelect, isOnLoan }) => {
         {book.coverImage && (
           <p className="book-author-info">{book.author || 'Unknown Author'}</p>
         )}
-        {/* <button 
+        <button 
           className="learn-more-btn"
           onClick={(e) => {
             e.stopPropagation();
-            onLearnMore(book);
+            if (onViewDetails) {
+              onViewDetails(book);
+            } else if (onLearnMore) {
+              onLearnMore(book);
+            }
           }}
         >
-          Learn more
-        </button> */}
+          View details
+        </button>
       </div>
     </div>
   );
