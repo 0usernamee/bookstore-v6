@@ -14,6 +14,7 @@
 
 .modal-content {
   background: white;
+  color: black;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   width: 100%;
@@ -57,7 +58,7 @@
 .form-row label {
   min-width: 120px;
   font-weight: normal;
-  color: #ffffff;
+  color: #000000;
   font-size: 1rem;
   font-family: serif;
 }
